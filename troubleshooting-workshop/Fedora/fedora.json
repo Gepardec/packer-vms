@@ -11,11 +11,11 @@
     "vagrant_cloud_username": "",
     "vm_disk_adapter_type": "scsi",
     "vm_disk_size": "36864",
-    "vm_memory": "1024",
+    "vm_memory": "4096",
     "vm_name": "",
-    "vm_ssh_password": "vagrant",
-    "vm_ssh_username": "vagrant",
-    "vm_vcpu": "1"
+    "vm_ssh_password": "gepard",
+    "vm_ssh_username": "gepard",
+    "vm_vcpu": "2"
   },
   "builders": [
     {
@@ -96,9 +96,9 @@
       "type": "shell",
       "scripts": [
         "scripts/base.sh",
-        "scripts/vagrant.sh",
         "scripts/virtualbox.sh",
         "scripts/vmware.sh",
+        "scripts/desktop.sh",
         "scripts/cleanup.sh",
         "scripts/zerodisk.sh"
       ]

@@ -15,11 +15,6 @@ if [[ $id == "fedora" ]]; then
   sudo dnf clean all
 fi
 
-# Stop rsyslog service
-if [[ $id != "arch" ]]; then
-  sudo service rsyslog stop
-fi
-
 #clear audit logs
 if [ -f /var/log/audit/audit.log ]; then
   sudo bash -c "cat /dev/null > /var/log/audit/audit.log"

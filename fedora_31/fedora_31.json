@@ -1,0 +1,51 @@
+{
+  "variables": {
+    "boot_command_prefix": "inst.text inst.ks",
+    "iso_checksum": "225ebc160e40bb43c5de28bad9680e3a78a9db40c9e3f4f42f3ee3f10f95dbeb",
+    "iso_checksum_type": "sha256",
+    "iso_url": "https://download.fedoraproject.org/pub/fedora/linux/releases/31/Server/x86_64/iso/Fedora-Server-dvd-x86_64-31-1.9.iso",
+    "vm_name": "fedora31-base",
+    "vm_disk_adapter_type": "scsi",
+    "vm_disk_size": "36864",
+    "vm_memory": "4096",
+    "vm_ssh_password": "gepard",
+    "vm_ssh_username": "gepard",
+    "vm_vcpu": "2"
+  },
+  "builders": [
+    {
+      "type": "virtualbox-iso",
+      "boot_command": [
+        "<tab> {{ user `boot_command_prefix` }}=http://{{ .HTTPIP }}:{{ .HTTPPort }}/fedora/ks.cfg <enter><wait>"
+      ],
+      "cpus": "{{ user `vm_vcpu` }}",
+      "disk_size": "{{ user `vm_disk_size` }}",
+      "guest_os_type": "Fedora_64",
+      "hard_drive_interface": "{{ user `vm_disk_adapter_type` }}",
+      "headless": false,
+      "http_directory": "http",
+      "iso_checksum_type": "{{ user `iso_checksum_type` }}",
+      "iso_checksum": "{{ user `iso_checksum` }}",
+      "iso_url": "{{ user `iso_url` }}",
+      "memory": "{{ user `vm_memory` }}",
+      "output_directory": "output-{{ user `vm_name` }}-{{ build_type }}",
+      "shutdown_command": "sudo shutdown -P now",
+      "ssh_password": "{{ user `vm_ssh_password` }}",
+      "ssh_username": "{{ user `vm_ssh_username` }}",
+      "ssh_wait_timeout": "20m",
+      "vm_name": "{{ user `vm_name` }}"
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "scripts": [
+        "scripts/base.sh",
+        "scripts/virtualbox.sh",
+        "scripts/desktop.sh",
+        "scripts/cleanup.sh",
+        "scripts/zerodisk.sh"
+      ]
+    }
+  ]
+}

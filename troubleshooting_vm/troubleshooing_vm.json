@@ -1,0 +1,26 @@
+{
+  "variables": {
+    "vm_name": "troubleshooting-vm",
+    "ssh_password": "gepard",
+    "ssh_username": "gepard"
+  },
+  "builders": [
+    {
+      "type": "virtualbox-ovf",
+      "source_path": "../fedora_31/output-fedora31-base-virtualbox-iso/fedora31-base.ovf",
+      "ssh_username": "{{ user `ssh_username` }}",
+      "ssh_password": "{{ user `ssh_password` }}",
+      "headless": false,
+      "keep_registered": true,
+      "vm_name": "{{ user `vm_name` }}",
+      "output_directory": "output-{{ user `vm_name` }}-{{ build_type }}",
+      "shutdown_command": "sudo shutdown -P now"
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "ansible",
+      "playbook_file": "./playbook.yml"
+    }
+  ]
+}

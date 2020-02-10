@@ -1,29 +1,32 @@
 - hosts: default
-  become: true
   gather_facts: false
   tasks:
      - name: Install needed packages
+       become: yes
        yum: name=grubby,docker,docker-compose,unzip,git,time,bc state=installed
      - name: Change Cgroup
+       become: yes
        shell: grubby --update-kernel=ALL --args="systemd.unified_cgroup_hierarchy=0"
      - name: Add User to docker group
+       become: yes
        shell: gpasswd -a gepard docker
      - name: set max_map_count
+       become: yes
        lineinfile:
          path: /etc/sysctl.conf
          line: vm.max_map_count=300000
      - name: Enable Docker Daemon
+       become: yes
        systemd:
          name: docker
          enabled: yes
      - name: Reboot needed
+       become: yes
        reboot:
      - name: Copy Elastic-APM
        copy:
          src: bin/elastic-apm/
          dest: /home/gepard/elastic-apm/
-         owner: gepard
-         group: gepard
      - name: Start Elastic APM
        docker_compose:
          project_src: /home/gepard/elastic-apm/
@@ -34,20 +37,14 @@
        file:
          state: directory
          path: "/home/gepard/{{ item }}"
-         owner: gepard
-         group: gepard
      - name: Copy and unpack IBM JDK
        unarchive:
          src: bin/java/ibm-java-x86_64-80.zip
          dest: /home/gepard/java/
-         owner: gepard
-         group: gepard
      - name: Copy and unpack Oracle JDK
        unarchive:
          src: bin/java/jdk1.8.0_201-amd64.zip
          dest: /home/gepard/java/
-         owner: gepard
-         group: gepard
      - name: set default java
        lineinfile:
          path: /home/gepard/.bashrc
@@ -56,27 +53,19 @@
        copy:
          src: bin/jboss/jboss-eap-7.2.2.zip
          dest: /home/gepard/Downloads/
-         owner: gepard
-         group: gepard
      - name: Copy JBoss RC config
        copy:
          src: bin/jboss/eap7rc
          dest: /home/gepard/.eap7rc
-         owner: gepard
-         group: gepard
      - name: Copy JBoss Tools
        copy:
          src: bin/jboss/eap7
          dest: /home/gepard/bin/eap7
-         owner: gepard
-         group: gepard
          mode: preserve
      - name: Copy MAT
        unarchive:
          src: bin/mat.zip
          dest: /home/gepard/
-         owner: gepard
-         group: gepard
      - name: Clone Troubleshooting Workshop
        git:
          repo: https://github.com/Gepardec/TroubleshootingWorkshop.git

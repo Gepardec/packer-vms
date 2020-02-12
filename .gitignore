@@ -3,3 +3,6 @@ output-*
 bin
 *.iml
 workspace
+.DS_Store
+.vagrant
+builds

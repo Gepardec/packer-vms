@@ -1,5 +1,4 @@
 - hosts: default
-  gather_facts: false
   tasks:
      - name: Install needed packages
        become: yes
@@ -25,57 +24,57 @@
        reboot:
      - name: Copy Elastic-APM
        copy:
-         src: bin/elastic-apm/
-         dest: /home/gepard/elastic-apm/
+         src: /home/hwirnsberger/NAS/Gepardec/packer-vms/troubleshooting_vm/bin/elastic-apm/
+         dest: "{{ ansible_env.HOME }}/elastic-apm/"
      - name: Start Elastic APM
        docker_compose:
-         project_src: /home/gepard/elastic-apm/
+         project_src: "{{ ansible_env.HOME }}/elastic-apm/"
      - name: create needed dirs
        loop:
          - bin/
          - java/
        file:
          state: directory
-         path: "/home/gepard/{{ item }}"
+         path: "{{ ansible_env.HOME }}/{{ item }}"
      - name: Copy and unpack IBM JDK
        unarchive:
-         src: bin/java/ibm-java-x86_64-80.zip
-         dest: /home/gepard/java/
+         src: /home/hwirnsberger/NAS/Gepardec/packer-vms/troubleshooting_vm/bin/java/ibm-java-x86_64-80.zip
+         dest: "{{ ansible_env.HOME }}/java/"
      - name: Copy and unpack Oracle JDK
        unarchive:
-         src: bin/java/jdk1.8.0_201-amd64.zip
-         dest: /home/gepard/java/
+         src: /home/hwirnsberger/NAS/Gepardec/packer-vms/troubleshooting_vm/bin/java/jdk1.8.0_201-amd64.zip
+         dest: "{{ ansible_env.HOME }}/java/"
      - name: set default java
        lineinfile:
-         path: /home/gepard/.bashrc
-         line: PATH="/home/gepard/java/jdk1.8.0_201-amd64/bin/:$PATH"
+         path: "{{ ansible_env.HOME }}/.bashrc"
+         line: PATH="{{ ansible_env.HOME }}/java/jdk1.8.0_201-amd64/bin/:$PATH"
      - name: Copy JBoss
        copy:
-         src: bin/jboss/jboss-eap-7.2.2.zip
-         dest: /home/gepard/Downloads/
+         src: /home/hwirnsberger/NAS/Gepardec/packer-vms/troubleshooting_vm/bin/jboss/jboss-eap-7.2.2.zip
+         dest: "{{ ansible_env.HOME }}/Downloads/"
      - name: Copy JBoss RC config
        copy:
-         src: bin/jboss/eap7rc
-         dest: /home/gepard/.eap7rc
+         src: /home/hwirnsberger/NAS/Gepardec/packer-vms/troubleshooting_vm/bin/jboss/eap7rc
+         dest: "{{ ansible_env.HOME }}/.eap7rc"
      - name: Copy JBoss Tools
        copy:
-         src: bin/jboss/eap7
-         dest: /home/gepard/bin/eap7
+         src: /home/hwirnsberger/NAS/Gepardec/packer-vms/troubleshooting_vm/bin/jboss/eap7
+         dest: "{{ ansible_env.HOME }}/bin/eap7"
          mode: preserve
      - name: Copy MAT
        unarchive:
-         src: bin/mat.zip
-         dest: /home/gepard/
+         src: /home/hwirnsberger/NAS/Gepardec/packer-vms/troubleshooting_vm/bin/mat.zip
+         dest: "{{ ansible_env.HOME }}/"
      - name: Clone Troubleshooting Workshop
        git:
          repo: https://github.com/Gepardec/TroubleshootingWorkshop.git
-         dest: /home/gepard/TroubleshootingWorkshop
+         dest: "{{ ansible_env.HOME }}/TroubleshootingWorkshop"
      - name: Add alias
        loop:
-         - alias cdl="cd /home/gepard/jboss-eap-7.2.2/standalone/log/"
-         - alias cdc="cd /home/gepard/jboss-eap-7.2.2/standalone/configuration/"
-         - alias cdd="cd /home/gepard/jboss-eap-7.2.2/standalone/deployments/"
-         - alias cdb="cd /home/gepard/jboss-eap-7.2.2/bin/"
+         - alias cdl="cd {{ ansible_env.HOME }}/jboss-eap-7.2.2/standalone/log/"
+         - alias cdc="cd {{ ansible_env.HOME }}/jboss-eap-7.2.2/standalone/configuration/"
+         - alias cdd="cd {{ ansible_env.HOME }}/jboss-eap-7.2.2/standalone/deployments/"
+         - alias cdb="cd {{ ansible_env.HOME }}/jboss-eap-7.2.2/bin/"
        lineinfile:
-         path: /home/gepard/.bashrc
+         path: "{{ ansible_env.HOME }}/.bashrc"
          line: "{{ item }}"
